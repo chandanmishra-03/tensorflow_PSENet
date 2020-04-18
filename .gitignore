@@ -1,2 +1,5 @@
+resnet_v1_50
+data
+data/
 *.DS_Store
 *.pyc
