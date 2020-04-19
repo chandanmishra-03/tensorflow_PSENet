@@ -1,5 +1,13 @@
+# import comet_ml in the top of your file
+from comet_ml import Experiment
 import time
 import numpy as np
+
+
+# Add the following code anywhere in your machine learning file
+experiment = Experiment(api_key="iEJDqOgS8QPlGv7hK3MYESLE2",
+                        project_name="hindi-detection", workspace="iiitian-chandan")
+
 import tensorflow as tf
 from tensorflow.contrib import slim
 from utils.utils_tool import logger, cfg
