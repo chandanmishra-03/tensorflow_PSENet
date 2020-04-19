@@ -288,6 +288,7 @@ def generator(input_size=512, batch_size=32,
                     logger.info(im_fn)
                 h, w, _ = im.shape
                 txt_fn = im_fn.replace(os.path.basename(im_fn).split('.')[1], 'txt')
+                txt_fn = txt_fn.replace("img_","gt_img_")
                 print("txt fn", txt_fn)
                 if not os.path.exists(txt_fn):
                     continue
