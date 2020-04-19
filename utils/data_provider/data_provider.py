@@ -58,8 +58,8 @@ def load_annoataion(p):
     '''
 
 
-    print("Reading annotations ..................................")
-    print(p)
+    # print("Reading annotations ..................................")
+    # print(p)
     text_polys = []
     text_tags = []
     if not os.path.exists(p):
