@@ -65,7 +65,7 @@ def load_annoataion(p):
     if not os.path.exists(p):
         return np.array(text_polys, dtype=np.float32)
     with open(p, 'r') as f:
-        reader = csv.reader(f)
+        reader = csv.reader(f, delimiter=' ')
         for line in reader:
             label = line[-1]
             # strip BOM. \ufeff for python3,  \xef\xbb\bf for python2

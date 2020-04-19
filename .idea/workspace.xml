@@ -2,10 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7cdcd6f7-0a48-4b50-ac04-b1482a0fcbd7" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/read_hindi.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/requiremnts.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eval.py" beforeDir="false" afterPath="$PROJECT_DIR$/eval.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utils/data_provider/data_provider.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/data_provider/data_provider.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -20,8 +16,8 @@
         <entry file="file://$PROJECT_DIR$/utils/data_provider/data_provider.py">
           <provider selected="true" editor-type-id="live-pycharm">
             <state>
-              <first_editor relative-caret-position="345">
-                <caret line="293" column="28" lean-forward="true" selection-start-line="293" selection-start-column="28" selection-end-line="293" selection-end-column="28" />
+              <first_editor relative-caret-position="179">
+                <caret line="67" column="43" selection-start-line="67" selection-start-column="43" selection-end-line="67" selection-end-column="43" />
               </first_editor>
               <second_editor relative-caret-position="-105" />
             </state>
@@ -214,12 +210,12 @@
       <option name="presentableId" value="Default" />
       <updated>1587187376350</updated>
       <workItem from="1587187391266" duration="5540000" />
-      <workItem from="1587272715986" duration="11073000" />
+      <workItem from="1587272715986" duration="11183000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="16613000" />
+    <option name="totallyTimeSpent" value="16723000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="-1" width="1366" height="728" extended-state="6" />
@@ -334,8 +330,8 @@
     <entry file="file://$PROJECT_DIR$/utils/data_provider/data_provider.py">
       <provider selected="true" editor-type-id="live-pycharm">
         <state>
-          <first_editor relative-caret-position="345">
-            <caret line="293" column="28" lean-forward="true" selection-start-line="293" selection-start-column="28" selection-end-line="293" selection-end-column="28" />
+          <first_editor relative-caret-position="179">
+            <caret line="67" column="43" selection-start-line="67" selection-start-column="43" selection-end-line="67" selection-end-column="43" />
           </first_editor>
           <second_editor relative-caret-position="-105" />
         </state>
