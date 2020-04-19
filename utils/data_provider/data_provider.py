@@ -268,6 +268,7 @@ def generator(input_size=512, batch_size=32,
     image_list = np.array(get_files(['jpg', 'png', 'jpeg', 'JPG']))
     print("Inside generator ............................>##########")
     print("len of image list", len(image_list))
+    print(image_list)
 
     logger.info('{} training images in {}'.format(
         image_list.shape[0], FLAGS.training_data_path))
@@ -287,6 +288,7 @@ def generator(input_size=512, batch_size=32,
                     logger.info(im_fn)
                 h, w, _ = im.shape
                 txt_fn = im_fn.replace(os.path.basename(im_fn).split('.')[1], 'txt')
+                print("txt fn", txt_fn)
                 if not os.path.exists(txt_fn):
                     continue
 
