@@ -36,6 +36,7 @@ def get_files(exts):
             os.path.join(FLAGS.training_data_path, '*.{}'.format(ext))))
     return files
 
+
 def get_json_label():
     label_file_list = get_files(['json'])
     label = {}
@@ -48,12 +49,17 @@ def get_json_label():
                     label[k] = v
     return label
 
+
 def load_annoataion(p):
     '''
     load annotation from the text file
     :param p:
     :return:
     '''
+
+
+    print("Reading annotations ..................................")
+    print(p)
     text_polys = []
     text_tags = []
     if not os.path.exists(p):
@@ -67,12 +73,13 @@ def load_annoataion(p):
 
             x1, y1, x2, y2, x3, y3, x4, y4 = list(map(float, line[:8]))
             text_polys.append([[x1, y1], [x2, y2], [x3, y3], [x4, y4]])
-            #TODO:maybe add '?' for icpr2018 (michael)
+            # TODO:maybe add '?' for icpr2018 (michael)
             if label == '*' or label == '###' or label == '?':
                 text_tags.append(True)
             else:
                 text_tags.append(False)
         return np.array(text_polys, dtype=np.float32), np.array(text_tags, dtype=np.bool)
+
 
 def check_and_validate_polys(polys, tags, xxx_todo_changeme):
     '''
@@ -85,21 +92,22 @@ def check_and_validate_polys(polys, tags, xxx_todo_changeme):
     (h, w) = xxx_todo_changeme
     if polys.shape[0] == 0:
         return [], []
-    polys[:, :, 0] = np.clip(polys[:, :, 0], 0, w-1)
-    polys[:, :, 1] = np.clip(polys[:, :, 1], 0, h-1)
+    polys[:, :, 0] = np.clip(polys[:, :, 0], 0, w - 1)
+    polys[:, :, 1] = np.clip(polys[:, :, 1], 0, h - 1)
 
     validated_polys = []
     validated_tags = []
     for poly, tag in zip(polys, tags):
-        if abs(pyclipper.Area(poly))<1:
+        if abs(pyclipper.Area(poly)) < 1:
             continue
-        #clockwise
+        # clockwise
         if pyclipper.Orientation(poly):
             poly = poly[::-1]
 
         validated_polys.append(poly)
         validated_tags.append(tag)
     return np.array(validated_polys), np.array(validated_tags)
+
 
 def crop_area(im, polys, tags, crop_background=False, max_tries=50):
     '''
@@ -112,18 +120,18 @@ def crop_area(im, polys, tags, crop_background=False, max_tries=50):
     :return:
     '''
     h, w, _ = im.shape
-    pad_h = h//10
-    pad_w = w//10
-    h_array = np.zeros((h + pad_h*2), dtype=np.int32)
-    w_array = np.zeros((w + pad_w*2), dtype=np.int32)
+    pad_h = h // 10
+    pad_w = w // 10
+    h_array = np.zeros((h + pad_h * 2), dtype=np.int32)
+    w_array = np.zeros((w + pad_w * 2), dtype=np.int32)
     for poly in polys:
         poly = np.round(poly, decimals=0).astype(np.int32)
         minx = np.min(poly[:, 0])
         maxx = np.max(poly[:, 0])
-        w_array[minx+pad_w:maxx+pad_w] = 1
+        w_array[minx + pad_w:maxx + pad_w] = 1
         miny = np.min(poly[:, 1])
         maxy = np.max(poly[:, 1])
-        h_array[miny+pad_h:maxy+pad_h] = 1
+        h_array[miny + pad_h:maxy + pad_h] = 1
     # ensure the cropped area not across a text
     h_axis = np.where(h_array == 0)[0]
     w_axis = np.where(w_array == 0)[0]
@@ -133,14 +141,14 @@ def crop_area(im, polys, tags, crop_background=False, max_tries=50):
         xx = np.random.choice(w_axis, size=2)
         xmin = np.min(xx) - pad_w
         xmax = np.max(xx) - pad_w
-        xmin = np.clip(xmin, 0, w-1)
-        xmax = np.clip(xmax, 0, w-1)
+        xmin = np.clip(xmin, 0, w - 1)
+        xmax = np.clip(xmax, 0, w - 1)
         yy = np.random.choice(h_axis, size=2)
         ymin = np.min(yy) - pad_h
         ymax = np.max(yy) - pad_h
-        ymin = np.clip(ymin, 0, h-1)
-        ymax = np.clip(ymax, 0, h-1)
-        if xmax - xmin < FLAGS.min_crop_side_ratio*w or ymax - ymin < FLAGS.min_crop_side_ratio*h:
+        ymin = np.clip(ymin, 0, h - 1)
+        ymax = np.clip(ymax, 0, h - 1)
+        if xmax - xmin < FLAGS.min_crop_side_ratio * w or ymax - ymin < FLAGS.min_crop_side_ratio * h:
             # area too small
             continue
         if polys.shape[0] != 0:
@@ -152,10 +160,10 @@ def crop_area(im, polys, tags, crop_background=False, max_tries=50):
         if len(selected_polys) == 0:
             # no text in this area
             if crop_background:
-                return im[ymin:ymax+1, xmin:xmax+1, :], polys[selected_polys], tags[selected_polys]
+                return im[ymin:ymax + 1, xmin:xmax + 1, :], polys[selected_polys], tags[selected_polys]
             else:
                 continue
-        im = im[ymin:ymax+1, xmin:xmax+1, :]
+        im = im[ymin:ymax + 1, xmin:xmax + 1, :]
         polys = polys[selected_polys]
         tags = tags[selected_polys]
         polys[:, :, 0] -= xmin
@@ -164,17 +172,19 @@ def crop_area(im, polys, tags, crop_background=False, max_tries=50):
 
     return im, polys, tags
 
+
 def perimeter(poly):
     try:
-        p=0
+        p = 0
         nums = poly.shape[0]
         for i in range(nums):
-            p += abs(np.linalg.norm(poly[i%nums]-poly[(i+1)%nums]))
+            p += abs(np.linalg.norm(poly[i % nums] - poly[(i + 1) % nums]))
         # logger.debug('perimeter:{}'.format(p))
         return p
     except Exception as e:
         traceback.print_exc()
         raise e
+
 
 def shrink_poly(poly, r):
     try:
@@ -183,7 +193,7 @@ def shrink_poly(poly, r):
         poly_s = []
         pco = pyclipper.PyclipperOffset()
         if perimeter_poly:
-            d=area_poly*(1-r*r)/perimeter_poly
+            d = area_poly * (1 - r * r) / perimeter_poly
             pco.AddPath(poly, pyclipper.JT_ROUND, pyclipper.ET_CLOSEDPOLYGON)
             poly_s = pco.Execute(-d)
         return poly_s
@@ -191,7 +201,8 @@ def shrink_poly(poly, r):
         traceback.print_exc()
         raise e
 
-#TODO:filter small text(when shrincked region shape is 0 no matter what scale ratio is)
+
+# TODO:filter small text(when shrincked region shape is 0 no matter what scale ratio is)
 def generate_seg(im_size, polys, tags, image_name, scale_ratio):
     '''
     :param im_size: input image size
@@ -204,13 +215,13 @@ def generate_seg(im_size, polys, tags, image_name, scale_ratio):
     training_mask: ignore text regions
     '''
     h, w = im_size
-    #mark different text poly
-    seg_maps = np.zeros((h,w,6), dtype=np.uint8)
+    # mark different text poly
+    seg_maps = np.zeros((h, w, 6), dtype=np.uint8)
     # mask used during traning, to ignore some hard areas
     training_mask = np.ones((h, w), dtype=np.uint8)
     ignore_poly_mark = []
     for i in range(len(scale_ratio)):
-        seg_map = np.zeros((h,w), dtype=np.uint8)
+        seg_map = np.zeros((h, w), dtype=np.uint8)
         for poly_idx, poly_tag in enumerate(zip(polys, tags)):
             poly = poly_tag[0]
             tag = poly_tag[1]
@@ -227,7 +238,7 @@ def generate_seg(im_size, polys, tags, image_name, scale_ratio):
 
             if not len(shrinked_polys) and poly_idx not in ignore_poly_mark:
                 logger.info("before shrink poly area:{} len(shrinked_poly) is 0,image {}".format(
-                    abs(pyclipper.Area(poly)),image_name))
+                    abs(pyclipper.Area(poly)), image_name))
                 # if the poly is too small, then ignore it during training
                 cv2.fillPoly(training_mask, poly.astype(np.int32)[np.newaxis, :, :], 0)
                 ignore_poly_mark.append(poly_idx)
@@ -240,8 +251,8 @@ def generate_seg(im_size, polys, tags, image_name, scale_ratio):
 
 
 def generator(input_size=512, batch_size=32,
-              background_ratio=3./8,
-              random_scale=np.array([0.125, 0.25,0.5, 1, 2.0, 3.0]),
+              background_ratio=3. / 8,
+              random_scale=np.array([0.125, 0.25, 0.5, 1, 2.0, 3.0]),
               vis=False,
               scale_ratio=np.array([0.5, 0.6, 0.7, 0.8, 0.9, 1.0])):
     '''
@@ -255,6 +266,8 @@ def generator(input_size=512, batch_size=32,
     :return:
     '''
     image_list = np.array(get_files(['jpg', 'png', 'jpeg', 'JPG']))
+    print("Inside generator ............................>##########")
+    print("len of image list", len(image_list))
 
     logger.info('{} training images in {}'.format(
         image_list.shape[0], FLAGS.training_data_path))
@@ -295,7 +308,7 @@ def generator(input_size=512, batch_size=32,
                         continue
                     # pad and resize image
                     new_h, new_w, _ = im.shape
-                    #max_h_w_i = np.max([new_h, new_w, input_size])
+                    # max_h_w_i = np.max([new_h, new_w, input_size])
                     im_padded = np.zeros((new_h, new_w, 3), dtype=np.uint8)
                     im_padded[:new_h, :new_w, :] = im.copy()
                     im = cv2.resize(im_padded, dsize=(input_size, input_size))
@@ -309,7 +322,7 @@ def generator(input_size=512, batch_size=32,
 
                     # pad the image to the training input size or the longer side of image
                     new_h, new_w, _ = im.shape
-                    #max_h_w_i = np.max([new_h, new_w, input_size])
+                    # max_h_w_i = np.max([new_h, new_w, input_size])
                     im_padded = np.zeros((new_h, new_w, 3), dtype=np.uint8)
                     im_padded[:new_h, :new_w, :] = im.copy()
                     im = im_padded
@@ -318,13 +331,13 @@ def generator(input_size=512, batch_size=32,
                     resize_h = input_size
                     resize_w = input_size
                     im = cv2.resize(im, dsize=(resize_w, resize_h))
-                    resize_ratio_3_x = resize_w/float(new_w)
-                    resize_ratio_3_y = resize_h/float(new_h)
+                    resize_ratio_3_x = resize_w / float(new_w)
+                    resize_ratio_3_y = resize_h / float(new_h)
                     text_polys[:, :, 0] *= resize_ratio_3_x
                     text_polys[:, :, 1] *= resize_ratio_3_y
                     new_h, new_w, _ = im.shape
                     seg_map_per_image, training_mask = generate_seg((new_h, new_w), text_polys, text_tags,
-                                                                     image_list[i], scale_ratio)
+                                                                    image_list[i], scale_ratio)
                     if not len(seg_map_per_image):
                         logger.info("len(seg_map)==0 image: %d " % i)
                         continue
@@ -365,7 +378,7 @@ def generator(input_size=512, batch_size=32,
                 training_masks.append(training_mask[::4, ::4, np.newaxis].astype(np.float32))
 
                 if len(images) == batch_size:
-                    yield images, image_fns, seg_maps,  training_masks
+                    yield images, image_fns, seg_maps, training_masks
                     images = []
                     image_fns = []
                     seg_maps = []
