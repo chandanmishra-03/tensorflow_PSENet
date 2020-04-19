@@ -266,9 +266,9 @@ def generator(input_size=512, batch_size=32,
     :return:
     '''
     image_list = np.array(get_files(['jpg', 'png', 'jpeg', 'JPG']))
-    print("Inside generator ............................>##########")
-    print("len of image list", len(image_list))
-    print(image_list)
+    # print("Inside generator ............................>##########")
+    # print("len of image list", len(image_list))
+    # print(image_list)
 
     logger.info('{} training images in {}'.format(
         image_list.shape[0], FLAGS.training_data_path))
@@ -289,12 +289,12 @@ def generator(input_size=512, batch_size=32,
                 h, w, _ = im.shape
                 txt_fn = im_fn.replace(os.path.basename(im_fn).split('.')[1], 'txt')
                 txt_fn = txt_fn.replace("img_","gt_img_")
-                print("txt fn", txt_fn)
+                # print("txt fn", txt_fn)
                 if not os.path.exists(txt_fn):
                     continue
 
                 text_polys, text_tags = load_annoataion(txt_fn)
-                print(text_polys, text_tags )
+                # print(text_polys, text_tags )
                 if text_polys.shape[0] == 0:
                     continue
                 text_polys, text_tags = check_and_validate_polys(text_polys, text_tags, (h, w))
