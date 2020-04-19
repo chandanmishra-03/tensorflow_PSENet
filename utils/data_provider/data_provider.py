@@ -293,6 +293,7 @@ def generator(input_size=512, batch_size=32,
                     continue
 
                 text_polys, text_tags = load_annoataion(txt_fn)
+                print(text_polys, text_tags )
                 if text_polys.shape[0] == 0:
                     continue
                 text_polys, text_tags = check_and_validate_polys(text_polys, text_tags, (h, w))
@@ -386,6 +387,7 @@ def generator(input_size=512, batch_size=32,
                     seg_maps = []
                     training_masks = []
             except Exception as e:
+                print("Error 1: ", e)
                 traceback.print_exc()
                 continue
 
